@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=mcc_generated_files/src/pin_manager.c mcc_generated_files/src/protected_io.S mcc_generated_files/src/cpuint.c mcc_generated_files/src/spi0.c mcc_generated_files/src/tca0.c mcc_generated_files/device_config.c mcc_generated_files/mcc.c main.c key_handler.c si241.c
+SOURCEFILES_QUOTED_IF_SPACED=mcc_generated_files/src/pin_manager.c mcc_generated_files/src/protected_io.S mcc_generated_files/src/cpuint.c mcc_generated_files/src/spi0.c mcc_generated_files/src/tca0.c mcc_generated_files/device_config.c mcc_generated_files/mcc.c main.c key_handler.c si241.c mcc_generated_files/src/nvmctrl.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o ${OBJECTDIR}/mcc_generated_files/src/protected_io.o ${OBJECTDIR}/mcc_generated_files/src/cpuint.o ${OBJECTDIR}/mcc_generated_files/src/spi0.o ${OBJECTDIR}/mcc_generated_files/src/tca0.o ${OBJECTDIR}/mcc_generated_files/device_config.o ${OBJECTDIR}/mcc_generated_files/mcc.o ${OBJECTDIR}/main.o ${OBJECTDIR}/key_handler.o ${OBJECTDIR}/si241.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o.d ${OBJECTDIR}/mcc_generated_files/src/protected_io.o.d ${OBJECTDIR}/mcc_generated_files/src/cpuint.o.d ${OBJECTDIR}/mcc_generated_files/src/spi0.o.d ${OBJECTDIR}/mcc_generated_files/src/tca0.o.d ${OBJECTDIR}/mcc_generated_files/device_config.o.d ${OBJECTDIR}/mcc_generated_files/mcc.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/key_handler.o.d ${OBJECTDIR}/si241.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o ${OBJECTDIR}/mcc_generated_files/src/protected_io.o ${OBJECTDIR}/mcc_generated_files/src/cpuint.o ${OBJECTDIR}/mcc_generated_files/src/spi0.o ${OBJECTDIR}/mcc_generated_files/src/tca0.o ${OBJECTDIR}/mcc_generated_files/device_config.o ${OBJECTDIR}/mcc_generated_files/mcc.o ${OBJECTDIR}/main.o ${OBJECTDIR}/key_handler.o ${OBJECTDIR}/si241.o ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o.d ${OBJECTDIR}/mcc_generated_files/src/protected_io.o.d ${OBJECTDIR}/mcc_generated_files/src/cpuint.o.d ${OBJECTDIR}/mcc_generated_files/src/spi0.o.d ${OBJECTDIR}/mcc_generated_files/src/tca0.o.d ${OBJECTDIR}/mcc_generated_files/device_config.o.d ${OBJECTDIR}/mcc_generated_files/mcc.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/key_handler.o.d ${OBJECTDIR}/si241.o.d ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o ${OBJECTDIR}/mcc_generated_files/src/protected_io.o ${OBJECTDIR}/mcc_generated_files/src/cpuint.o ${OBJECTDIR}/mcc_generated_files/src/spi0.o ${OBJECTDIR}/mcc_generated_files/src/tca0.o ${OBJECTDIR}/mcc_generated_files/device_config.o ${OBJECTDIR}/mcc_generated_files/mcc.o ${OBJECTDIR}/main.o ${OBJECTDIR}/key_handler.o ${OBJECTDIR}/si241.o
+OBJECTFILES=${OBJECTDIR}/mcc_generated_files/src/pin_manager.o ${OBJECTDIR}/mcc_generated_files/src/protected_io.o ${OBJECTDIR}/mcc_generated_files/src/cpuint.o ${OBJECTDIR}/mcc_generated_files/src/spi0.o ${OBJECTDIR}/mcc_generated_files/src/tca0.o ${OBJECTDIR}/mcc_generated_files/device_config.o ${OBJECTDIR}/mcc_generated_files/mcc.o ${OBJECTDIR}/main.o ${OBJECTDIR}/key_handler.o ${OBJECTDIR}/si241.o ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o
 
 # Source Files
-SOURCEFILES=mcc_generated_files/src/pin_manager.c mcc_generated_files/src/protected_io.S mcc_generated_files/src/cpuint.c mcc_generated_files/src/spi0.c mcc_generated_files/src/tca0.c mcc_generated_files/device_config.c mcc_generated_files/mcc.c main.c key_handler.c si241.c
+SOURCEFILES=mcc_generated_files/src/pin_manager.c mcc_generated_files/src/protected_io.S mcc_generated_files/src/cpuint.c mcc_generated_files/src/spi0.c mcc_generated_files/src/tca0.c mcc_generated_files/device_config.c mcc_generated_files/mcc.c main.c key_handler.c si241.c mcc_generated_files/src/nvmctrl.c
 
 
 
@@ -148,6 +148,12 @@ ${OBJECTDIR}/si241.o: si241.c  .generated_files/flags/default/ec9fd66c4385f28642
 	@${RM} ${OBJECTDIR}/si241.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG  -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/si241.o.d" -MT "${OBJECTDIR}/si241.o.d" -MT ${OBJECTDIR}/si241.o -o ${OBJECTDIR}/si241.o si241.c 
 	
+${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o: mcc_generated_files/src/nvmctrl.c  .generated_files/flags/default/91433e068d00c79717177fd98e58bc2c7a0fabeb .generated_files/flags/default/e59806c5a8ad41530ce8f13ad72820595ff2ee29
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG  -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d" -MT "${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d" -MT ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o -o ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o mcc_generated_files/src/nvmctrl.c 
+	
 else
 ${OBJECTDIR}/mcc_generated_files/src/pin_manager.o: mcc_generated_files/src/pin_manager.c  .generated_files/flags/default/194c45067d98f144f15fac24f94cf5a730753b97 .generated_files/flags/default/e59806c5a8ad41530ce8f13ad72820595ff2ee29
 	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/src" 
@@ -202,6 +208,12 @@ ${OBJECTDIR}/si241.o: si241.c  .generated_files/flags/default/7e1ce8878d2e2fb22f
 	@${RM} ${OBJECTDIR}/si241.o.d 
 	@${RM} ${OBJECTDIR}/si241.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/si241.o.d" -MT "${OBJECTDIR}/si241.o.d" -MT ${OBJECTDIR}/si241.o -o ${OBJECTDIR}/si241.o si241.c 
+	
+${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o: mcc_generated_files/src/nvmctrl.c  .generated_files/flags/default/3b85b9906b7562db9e8a155cfbbb0841f33a4d .generated_files/flags/default/e59806c5a8ad41530ce8f13ad72820595ff2ee29
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d" -MT "${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o.d" -MT ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o -o ${OBJECTDIR}/mcc_generated_files/src/nvmctrl.o mcc_generated_files/src/nvmctrl.c 
 	
 endif
 

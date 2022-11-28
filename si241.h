@@ -19,12 +19,12 @@
 #define RX_ADDR_P4      0x0E
 #define RX_ADDR_P5      0x0F
 #define TX_ADDR         0x10
-#define EX_PW_P0        0x11
-#define EX_PW_P1        0x12
-#define EX_PW_P2        0x13
-#define EX_PW_P3        0x14
-#define EX_PW_P4        0x15
-#define EX_PW_P5        0x16
+#define RX_PW_P0        0x11
+#define RX_PW_P1        0x12
+#define RX_PW_P2        0x13
+#define RX_PW_P3        0x14
+#define RX_PW_P4        0x15
+#define RX_PW_P5        0x16
 #define FIFO_STATUS     0x17
 #define DYNPD           0x1c
 #define FEATURE         0x1d
@@ -40,13 +40,23 @@
 #define W_ACK_PAYLOAD   0xA8
 #define W_TX_PAYLOAD_NOACK   0xB0
 
-#define DEFAULT_FOB_ID      { 'M', 'I', 'C', 'R', 'O' }
+#define DEFAULT_FOB_ID      { 1, 0, 0, 0, 1 }
+#define Payload_len 7
 
 void SI241_PwrOn(void);
 void SI241_PwrOff(void);
 void SI241_SetupTx(void);
 void SI241_SetTx(void);
 void SI241_LoadTxAddress(void);
-void SI241_LoadRxAddress(void);
+void SI241_LoadRxAddress(uint8_t chan);
 void SI241_SetStandby(void);
+void SI241_SetupRxResp(void);
+void SI241_SetRxResp(void);
+void SI241_RX0_ClearInt(void);
+void SI241_RX0_Payload(uint8_t rx_bc);
+void SI241_SaveRxAddress(void);
+micro_id  SI241_ReadRxAddress(uint8_t offset);
+
 uint8_t SI241_Status(void);
+uint8_t SI241_RX0_BC(void);
+uint8_t SI241_RSSI(void);

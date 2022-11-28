@@ -9,6 +9,8 @@
 extern volatile KEYstateBITS KeyStatus;
 extern volatile KEYstateControl Key;
 extern uint8_t go_tx;
+extern uint8_t tx_pipe;
+extern uint8_t get_resp;
 
 void ServiceKeyPressInt(void)
 {
@@ -95,7 +97,8 @@ void ServiceCmd(void)
     {
         KeyStatus._new_cmd = 0;
         KeyStatus._scan_st = 0;        
-
+        tx_pipe = 1;
+        
         switch (Key._cmd)
         {
             case 0x3e:
@@ -143,8 +146,27 @@ void ServiceCmd(void)
             case 0x3b:
             {
                 go_tx = 3;
+                tx_pipe = 1;
+                get_resp = 0;
                 break;
             }
+
+            case 0x3d:
+            {
+                go_tx = 3;
+                tx_pipe = 0;
+                get_resp = 1;
+                break;
+            }
+
+            case 0x1f:
+            {
+                go_tx = 3;
+                tx_pipe = 0;
+                get_resp = 1;
+                break;
+            }
+            
         }
     }
 }

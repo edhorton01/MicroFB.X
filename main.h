@@ -50,3 +50,9 @@ typedef struct {
         };
     };
 } TmrDelay;
+
+typedef struct {
+    uint8_t _chan;
+    uint8_t _address[5];
+} micro_id;
+

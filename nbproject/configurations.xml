@@ -19,6 +19,7 @@
           <itemPath>mcc_generated_files/include/spi0.h</itemPath>
           <itemPath>mcc_generated_files/include/ccp.h</itemPath>
           <itemPath>mcc_generated_files/include/tca0.h</itemPath>
+          <itemPath>mcc_generated_files/include/nvmctrl.h</itemPath>
         </logicalFolder>
         <logicalFolder name="utils" displayName="utils" projectFiles="true">
           <logicalFolder name="assembler" displayName="assembler" projectFiles="true">
@@ -54,6 +55,7 @@
           <itemPath>mcc_generated_files/src/cpuint.c</itemPath>
           <itemPath>mcc_generated_files/src/spi0.c</itemPath>
           <itemPath>mcc_generated_files/src/tca0.c</itemPath>
+          <itemPath>mcc_generated_files/src/nvmctrl.c</itemPath>
         </logicalFolder>
         <itemPath>mcc_generated_files/device_config.c</itemPath>
         <itemPath>mcc_generated_files/mcc.c</itemPath>
@@ -113,7 +115,7 @@
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <AtmelIceTool>
-        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="AutoSelectMemRanges" value="manual"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="updi"/>
         <property key="communication.speed" value="0.500"/>
@@ -144,8 +146,8 @@
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${memories.dataflash.default}"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveeeprom.ranges" value="1400-147f"/>
+        <property key="programoptions.preserveeeprom" value="true"/>
+        <property key="programoptions.preserveeeprom.ranges" value="1400-143f"/>
         <property key="programoptions.preserveprogram.ranges" value=""/>
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
@@ -237,7 +239,7 @@
         <property key="remove-unused-sections" value="true"/>
       </HI-TECH-LINK>
       <Tool>
-        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="AutoSelectMemRanges" value="manual"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="updi"/>
         <property key="communication.speed" value="0.500"/>
@@ -268,8 +270,8 @@
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${memories.dataflash.default}"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveeeprom.ranges" value="1400-147f"/>
+        <property key="programoptions.preserveeeprom" value="true"/>
+        <property key="programoptions.preserveeeprom.ranges" value="1400-143f"/>
         <property key="programoptions.preserveprogram.ranges" value=""/>
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>

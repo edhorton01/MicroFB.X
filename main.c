@@ -47,8 +47,16 @@ uint8_t RX_PL_Len;
 uint8_t TX_PL_Len;
 uint8_t TX_Address[6];
 uint8_t RX_Address[6];
+uint8_t e2_buf[16];
 
 uint8_t Device_ID[5];
+uint8_t active_channel;
+uint8_t get_resp;
+
+uint8_t rx_bc;
+uint8_t rssi;
+
+micro_id remotes[2];
 
 /*
     Main application
@@ -60,6 +68,8 @@ int main(void)
     TimerD._flags = 0;
     go_tx = 0;
     tx_pipe = 1;
+    active_channel = 0x40;
+    
     Device_ID[0] = SIGROW.SERNUM0;
     Device_ID[1] = SIGROW.SERNUM1;
     Device_ID[2] = SIGROW.SERNUM2;
@@ -82,7 +92,10 @@ int main(void)
     Key._cmd = Key._bounce;
     IntStatus._flags = 0;
     PORTC_set_pin_level(1, false);      // TP3
+    get_resp = 0;
     
+    remotes[0] = SI241_ReadRxAddress(0);    
+    remotes[1] = SI241_ReadRxAddress(0x20);    
     sei();
     
     SI241_SetupTx();
@@ -100,7 +113,7 @@ int main(void)
         if(IntStatus._tc0)
         {
             IntStatus._tc0 = 0;
-            if(Si24_Status & 0x80)
+            if(Si24_Status == 0x80)
             {
                 PORTA_img = PORTA.IN;
                 if(!(PORTA_img & 0x10))
@@ -109,17 +122,75 @@ int main(void)
                     asm ("nop");
                     asm ("nop");
                     SI241_SetStandby();
+                    if(get_resp != 0)
+                    {
+                        asm ("nop");
+                        asm ("nop");
+                        asm ("nop");
+                        get_resp = 0;
+                        si24_on_timer = 500;            // set to 500 * 0.01 = 5 Seconds
+                        SI241_SetupRxResp();
+                        SI241_SetRxResp();
+                    }
                 }
+            }
+            
+            else if(Si24_Status == 0x40)
+            {
+                PORTA_img = PORTA.IN;
+                if(!(PORTA_img & 0x10))
+                {
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");
+                    rx_bc = SI241_RX0_BC();
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");
+                    SI241_RX0_Payload(rx_bc);
+                    rssi = SI241_RSSI();
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");                    
+                    SI241_RX0_ClearInt();                                        
+                    SI241_SetStandby();
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");                    
+                    SI241_SaveRxAddress();
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");                                
+                    SI241_ReadRxAddress(0);
+                    asm ("nop");
+                    asm ("nop");
+                    asm ("nop");                                
+                    
+                }
+                else
+                {
+                    if(si24_on_timer != 0)
+                    {
+                        si24_on_timer--;
+                        if(si24_on_timer == 0)
+                        {
+                            Si24_Status = 0;
+                            SI241_PwrOff();
+                        }
+                    }                        
+
+                }
+            }   
+
+            else if(Si24_Status == 0x20)
+            {
                 work1 = SI241_Status();
                 if(work1 & 0x20)
                 {
                     asm ("nop");
                     asm ("nop");
                     asm ("nop");                
-                }
-            }
-            else if(Si24_Status & 0x40)
-            {
+                }                    
                 if(si24_on_timer != 0)
                 {
                     si24_on_timer--;

@@ -42,10 +42,11 @@ void SYSTEM_Initialize(void)
     BOD_Initialize();
     //CPU_Initialize();
     WDT_Initialize();
-    CLKCTRL_Initialize();
     SLPCTRL_Initialize();
+    CLKCTRL_Initialize();
     SPI0_Initialize();
     TCA0_Initialize();
+    FLASH_Initialize();
     CPUINT_Initialize();
 }
 
