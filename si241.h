@@ -3,7 +3,7 @@
 /* Si241 register definations*/
 
 #define CONFIG          0x00
-#define EE_AA           0x01
+#define EN_AA           0x01
 #define EN_RXADDR       0x02
 #define SETUP_AW        0x03
 #define SETUP_RETR      0x04

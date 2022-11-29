@@ -21,6 +21,8 @@ extern uint8_t active_channel;
 extern uint8_t rx_bc;
 extern uint8_t e2_buf[6];
 extern micro_id remotes[2];
+extern uint8_t active_device;
+extern ButtonState function;
 
 extern volatile TmrDelay TimerD;
 extern volatile KEYstateControl Key;
@@ -79,10 +81,11 @@ void SI241_PwrOff(void)
 
 void SI241_SetupTx(void)
 {
+    uint8_t work;
     SI241_PwrOn();
-    TX_Payload[0] = W_TX_PAYLOAD_NOACK;
     if(tx_pipe == 0)
     {
+        TX_Payload[0] = W_TX_PAYLOAD_NOACK;
         TX_Payload[1] = ~Key._cmd;
         TX_Payload[2] = Key._cmd;                        
         TX_Payload[3] = Device_ID[0];
@@ -94,15 +97,19 @@ void SI241_SetupTx(void)
     }
     else
     {
+        TX_Payload[0] = W_TX_PAYLOAD;
+//        TX_Payload[0] = W_TX_PAYLOAD_NOACK;
+        
+        work = Key._cmd | (function._flags & 0x80);
         if(go_tx & 0x02)
         {
-            TX_Payload[1] = ~Key._cmd;
-            TX_Payload[2] = Key._cmd;                        
+            TX_Payload[1] = ~work;
+            TX_Payload[2] = work;                        
         }
         else
         {
-            TX_Payload[1] = Key._cmd;
-            TX_Payload[2] = ~Key._cmd;            
+            TX_Payload[1] = work;
+            TX_Payload[2] = ~work;            
         }
         tx_payload_size = 2;
     }
@@ -171,6 +178,24 @@ void SI241_SetupTx(void)
     SPI0_WriteBlock(&SPI_Bout, 2);
     while(!SPI0_StatusDone());
     IO_PA6_CSN_SetHigh(); 
+
+    if(tx_pipe != 0)
+    {
+        SPI_Bout[0] = EN_RXADDR;
+        SPI_Bout[0] = SPI_Bout[0] | W_REGISTER;    
+        SPI_Bout[1] = 0x01;
+        IO_PA6_CSN_SetLow();        
+        SPI0_WriteBlock(&SPI_Bout, 2);
+        while(!SPI0_StatusDone());
+        IO_PA6_CSN_SetHigh();                
+        SPI_Bout[0] = SETUP_RETR;
+        SPI_Bout[0] = SPI_Bout[0] | W_REGISTER;    
+        SPI_Bout[1] = 0xf1;
+        IO_PA6_CSN_SetLow();        
+        SPI0_WriteBlock(&SPI_Bout, 2);
+        while(!SPI0_StatusDone());
+        IO_PA6_CSN_SetHigh();                
+    }
     
     IO_PA6_CSN_SetLow();
     SPI0_ReadBlockCmd(&SPI_Bin, 6, 0x10);
@@ -255,13 +280,20 @@ void SI241_SetStandby(void)
     IO_PA6_CSN_SetLow();        
     SPI0_WriteBlock(&SPI_Bout, 2);
     while(!SPI0_StatusDone());
-    IO_PA6_CSN_SetHigh();                
+    IO_PA6_CSN_SetHigh(); 
+    
+    IO_PA7_CE_SetLow();
+    SPI_Bout[0] = FLUSH_TX;
+    IO_PA6_CSN_SetLow();        
+    SPI0_WriteBlock(&SPI_Bout, 1);
+    while(!SPI0_StatusDone());
+    IO_PA6_CSN_SetHigh();                    
 }
 
 uint8_t SI241_Status(void)
 {
     IO_PA6_CSN_SetLow();
-    SPI0_ReadBlockCmd(&SPI_Bin, 2, 0x00);
+    SPI0_ReadBlockCmd(&SPI_Bin, 1, 0xff);
     while(!SPI0_StatusDone());
     IO_PA6_CSN_SetHigh();
     return SPI_Bin[0];
@@ -325,7 +357,7 @@ void SI241_LoadTxAddress(void)
     }
     else
     {
-        TX_Address[1] = Device_ID[0];
+        TX_Address[1] = (Device_ID[0] | active_device);
         TX_Address[2] = Device_ID[1];
         TX_Address[3] = Device_ID[2];
         TX_Address[4] = Device_ID[3];
@@ -352,11 +384,17 @@ void SI241_LoadRxAddress(uint8_t chan)
     }
     else
     {
-        RX_Address[1] = remotes[chan]._address[0];
-        RX_Address[2] = remotes[chan]._address[1];
-        RX_Address[3] = remotes[chan]._address[2];
-        RX_Address[4] = remotes[chan]._address[3];
-        RX_Address[5] = remotes[chan]._address[4];        
+        RX_Address[1] = (Device_ID[0] | active_device);
+        RX_Address[2] = Device_ID[1];
+        RX_Address[3] = Device_ID[2];
+        RX_Address[4] = Device_ID[3];
+        RX_Address[5] = Device_ID[4];
+        
+//        RX_Address[1] = remotes[chan]._address[0];
+//        RX_Address[2] = remotes[chan]._address[1];
+//        RX_Address[3] = remotes[chan]._address[2];
+//        RX_Address[4] = remotes[chan]._address[3];
+//        RX_Address[5] = remotes[chan]._address[4];        
     }
 }
 

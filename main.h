@@ -56,3 +56,28 @@ typedef struct {
     uint8_t _address[5];
 } micro_id;
 
+typedef union {
+    struct {
+        uint8_t _flags;
+    };
+    struct {
+        unsigned _front:1;
+        unsigned _rear:1;
+        unsigned _top:1;
+        unsigned _sos:1;
+        unsigned _ga:1;
+        unsigned _gahold:1;
+        unsigned _work:1;
+        unsigned _state:1;        
+    };
+} ButtonState;
+
+enum function_map {
+    FRONT_M, 
+    REAR_M, 
+    TOP_M,
+    SOS_M,
+    GA_M,
+    GAHOLD_M,
+    WORK_M        
+};

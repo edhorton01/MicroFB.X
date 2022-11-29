@@ -3,7 +3,7 @@
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/include/port.h"
 
-#define debounce 20
+#define debounce 10
 #define hold_len 200 
 
 extern volatile KEYstateBITS KeyStatus;
@@ -11,6 +11,9 @@ extern volatile KEYstateControl Key;
 extern uint8_t go_tx;
 extern uint8_t tx_pipe;
 extern uint8_t get_resp;
+extern uint8_t active_device;
+extern ButtonState function;
+
 
 void ServiceKeyPressInt(void)
 {
@@ -92,6 +95,9 @@ void ServiceKeyPress(void)
 
 void ServiceCmd(void)
 {
+    uint8_t mask;
+    enum function_map shifter;
+    
     go_tx = 0;
     if (KeyStatus._new_cmd)
     {
@@ -103,39 +109,59 @@ void ServiceCmd(void)
         {
             case 0x3e:
             {
-                go_tx = 1;
+                shifter = TOP_M;
+                go_tx = 1; 
                 break;
             }
 
             case 0x3d:
             {
-                go_tx = 1;
+                shifter = REAR_M;
+                go_tx = 1; 
                 break;
             }
 
             case 0x3b:
             {
-                go_tx = 1;
+                shifter = SOS_M;
+                go_tx = 1; 
                 break;
             }
 
             case 0x37:
             {
-                go_tx = 1;
+                shifter = GA_M;
+                go_tx = 1; 
                 break;
             }
 
             case 0x2f:
             {
-                go_tx = 1;
+                shifter = WORK_M;
+                go_tx = 1; 
                 break;
             }
 
             case 0x1f:
             {
-                go_tx = 1;
+                shifter = FRONT_M;
+                go_tx = 1; 
                 break;
             }                        
+        }
+        
+        if(go_tx)
+        {
+            mask = (0x01 << shifter);
+            function._flags = function._flags ^ mask;
+            if(function._flags & mask)
+            {
+                function._state = 1;
+            }
+            else
+            {
+                function._state = 0;                    
+            }
         }
     }
     else if(KeyStatus._hold_req && !KeyStatus._hold_ack)
@@ -153,19 +179,29 @@ void ServiceCmd(void)
 
             case 0x3d:
             {
-                go_tx = 3;
-                tx_pipe = 0;
-                get_resp = 1;
+                active_device = 0x80;
+//                go_tx = 3;
+//                tx_pipe = 0;
+//                get_resp = 1;
                 break;
             }
 
             case 0x1f:
             {
+               active_device = 0;
+//                go_tx = 3;
+//                tx_pipe = 0;
+//                get_resp = 1;
+                break;
+            }
+
+            case 0x37:
+            {
                 go_tx = 3;
                 tx_pipe = 0;
                 get_resp = 1;
                 break;
-            }
+            }            
             
         }
     }

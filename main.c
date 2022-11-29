@@ -51,12 +51,16 @@ uint8_t e2_buf[16];
 
 uint8_t Device_ID[5];
 uint8_t active_channel;
+uint8_t active_device;
 uint8_t get_resp;
+uint8_t stat;
 
 uint8_t rx_bc;
 uint8_t rssi;
 
 micro_id remotes[2];
+ButtonState function;
+
 
 /*
     Main application
@@ -69,8 +73,10 @@ int main(void)
     go_tx = 0;
     tx_pipe = 1;
     active_channel = 0x40;
+    active_device = 0;
+    function._flags = 0;
     
-    Device_ID[0] = SIGROW.SERNUM0;
+    Device_ID[0] = (SIGROW.SERNUM0 & 0x7f);
     Device_ID[1] = SIGROW.SERNUM1;
     Device_ID[2] = SIGROW.SERNUM2;
     Device_ID[3] = SIGROW.SERNUM3;
@@ -98,8 +104,10 @@ int main(void)
     remotes[1] = SI241_ReadRxAddress(0x20);    
     sei();
     
+    tx_pipe = 0;
     SI241_SetupTx();
-
+    tx_pipe = 1;
+    
     asm ("nop");
     asm ("nop");
     asm ("nop");   
@@ -118,6 +126,7 @@ int main(void)
                 PORTA_img = PORTA.IN;
                 if(!(PORTA_img & 0x10))
                 {
+                    stat = SI241_Status();
                     asm ("nop");
                     asm ("nop");
                     asm ("nop");
