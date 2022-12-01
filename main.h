@@ -72,6 +72,19 @@ typedef union {
     };
 } ButtonState;
 
+typedef union {
+    struct {
+        uint8_t _flags;
+    };
+    struct {
+        unsigned _both_devices:1;
+        unsigned _both_devices_go:1;
+        unsigned _last_both_active:1;
+        unsigned _last_used:1;
+        unsigned _invert:1;         
+    };
+} Multiple;
+
 enum function_map {
     FRONT_M, 
     REAR_M, 

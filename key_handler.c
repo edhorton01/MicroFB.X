@@ -13,7 +13,9 @@ extern uint8_t tx_pipe;
 extern uint8_t get_resp;
 extern uint8_t active_device;
 extern ButtonState function;
+extern Multiple dev_ctl;
 
+uint8_t mask;
 
 void ServiceKeyPressInt(void)
 {
@@ -95,7 +97,6 @@ void ServiceKeyPress(void)
 
 void ServiceCmd(void)
 {
-    uint8_t mask;
     enum function_map shifter;
     
     go_tx = 0;
@@ -104,12 +105,28 @@ void ServiceCmd(void)
         KeyStatus._new_cmd = 0;
         KeyStatus._scan_st = 0;        
         tx_pipe = 1;
-        
+        dev_ctl._both_devices = 0;
         switch (Key._cmd)
         {
             case 0x3e:
             {
                 shifter = TOP_M;
+                if(dev_ctl._last_both_active)
+                {
+                    dev_ctl._both_devices = 0x01;
+                    active_device = 0;                                   
+                }
+                else
+                {
+                    if(dev_ctl._last_used)
+                    {
+                        active_device = 0x80; 
+                    }
+                    else
+                    {
+                        active_device = 0x0;                        
+                    }
+                }
                 go_tx = 1; 
                 break;
             }
@@ -117,6 +134,9 @@ void ServiceCmd(void)
             case 0x3d:
             {
                 shifter = REAR_M;
+                active_device = 0x0; 
+                dev_ctl._last_both_active = 0x0;
+                dev_ctl._last_used = 0x0;
                 go_tx = 1; 
                 break;
             }
@@ -131,6 +151,9 @@ void ServiceCmd(void)
             case 0x37:
             {
                 shifter = GA_M;
+                dev_ctl._both_devices = 0x01;
+                dev_ctl._last_both_active = 0x01;
+                active_device = 0;                
                 go_tx = 1; 
                 break;
             }
@@ -145,6 +168,9 @@ void ServiceCmd(void)
             case 0x1f:
             {
                 shifter = FRONT_M;
+                active_device = 0x80;
+                dev_ctl._last_both_active = 0x0;
+                dev_ctl._last_used = 0x1;
                 go_tx = 1; 
                 break;
             }                        
@@ -152,15 +178,51 @@ void ServiceCmd(void)
         
         if(go_tx)
         {
+            dev_ctl._invert = 0;
             mask = (0x01 << shifter);
-            function._flags = function._flags ^ mask;
+            if(shifter != SOS_M)
+            {
+                function._flags = function._flags ^ mask;                
+            }
             if(function._flags & mask)
             {
                 function._state = 1;
+                if(dev_ctl._both_devices && (shifter == GA_M))
+                {
+                    function._front = 1;
+                    function._rear = 1;
+                }
+                else
+                {
+                    if((shifter == FRONT_M) && (function._rear == 1))
+                    {
+                        function._ga = 1;
+                    }
+                    else if((shifter == REAR_M) && (function._front == 1))
+                    {
+                        function._ga = 1;
+                    }
+                }
             }
             else
             {
                 function._state = 0;                    
+                if(dev_ctl._both_devices && (shifter == GA_M))
+                {
+                    function._front = 0;
+                    function._rear = 0;
+                }
+                else
+                {
+                    if((shifter == FRONT_M) && (function._rear == 0))
+                    {
+                        function._ga = 0;
+                    }
+                    else if((shifter == REAR_M) && (function._front == 0))
+                    {
+                        function._ga = 0;
+                    }
+                }
             }
         }
     }
@@ -171,15 +233,32 @@ void ServiceCmd(void)
         {
             case 0x3b:
             {
-                go_tx = 3;
+                shifter = SOS_M;
+                go_tx = 1;
                 tx_pipe = 1;
                 get_resp = 0;
+                if(dev_ctl._last_both_active)
+                {
+                    dev_ctl._both_devices = 0x01;
+                    active_device = 0;                                   
+                }
+                else
+                {
+                    if(dev_ctl._last_used)
+                    {
+                        active_device = 0x80; 
+                    }
+                    else
+                    {
+                        active_device = 0x0;                        
+                    }
+                }               
                 break;
             }
 
             case 0x3d:
             {
-                active_device = 0x80;
+//                active_device = 0x80;
 //                go_tx = 3;
 //                tx_pipe = 0;
 //                get_resp = 1;
@@ -188,7 +267,7 @@ void ServiceCmd(void)
 
             case 0x1f:
             {
-               active_device = 0;
+//               active_device = 0;
 //                go_tx = 3;
 //                tx_pipe = 0;
 //                get_resp = 1;
@@ -197,12 +276,31 @@ void ServiceCmd(void)
 
             case 0x37:
             {
-                go_tx = 3;
+                go_tx = 1;
                 tx_pipe = 0;
                 get_resp = 1;
                 break;
-            }            
-            
+            }                        
+        }
+        asm ("nop");
+        asm ("nop");
+        asm ("nop");                
+        if(go_tx)
+        {
+            dev_ctl._invert = 1;
+            mask = (0x01 << shifter);
+            if(shifter == SOS_M)
+            {
+                function._flags = function._flags ^ mask;                
+            }
+            if(function._flags & mask)
+            {
+                function._state = 1;
+            }
+            else
+            {
+                 function._state = 0;               
+            }
         }
     }
 }

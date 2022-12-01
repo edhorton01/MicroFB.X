@@ -60,6 +60,7 @@ uint8_t rssi;
 
 micro_id remotes[2];
 ButtonState function;
+Multiple dev_ctl;
 
 
 /*
@@ -141,6 +142,15 @@ int main(void)
                         SI241_SetupRxResp();
                         SI241_SetRxResp();
                     }
+                    else if(dev_ctl._both_devices)
+                    {
+                        if(!active_device)
+                        {
+                            active_device = 0x80;
+                            dev_ctl._both_devices = 0;
+                            dev_ctl._both_devices_go = 1;
+                        }
+                    }
                 }
             }
             
@@ -220,11 +230,12 @@ int main(void)
                 ServiceKeyPress();
             }
         }
-        if(KeyStatus._new_cmd || (KeyStatus._hold_req && !KeyStatus._hold_ack))
+        if(KeyStatus._new_cmd || dev_ctl._both_devices_go || (KeyStatus._hold_req && !KeyStatus._hold_ack))
         {
             ServiceCmd();
-            if(go_tx)
+            if(go_tx || dev_ctl._both_devices_go)
             {
+                dev_ctl._both_devices_go = 0;
                 SI241_SetupTx();
                 go_tx = 0;
                 asm ("nop");

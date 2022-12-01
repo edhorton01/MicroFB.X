@@ -23,6 +23,7 @@ extern uint8_t e2_buf[6];
 extern micro_id remotes[2];
 extern uint8_t active_device;
 extern ButtonState function;
+extern Multiple dev_ctl;
 
 extern volatile TmrDelay TimerD;
 extern volatile KEYstateControl Key;
@@ -101,7 +102,7 @@ void SI241_SetupTx(void)
 //        TX_Payload[0] = W_TX_PAYLOAD_NOACK;
         
         work = Key._cmd | (function._flags & 0x80);
-        if(go_tx & 0x02)
+        if(dev_ctl._invert)
         {
             TX_Payload[1] = ~work;
             TX_Payload[2] = work;                        
